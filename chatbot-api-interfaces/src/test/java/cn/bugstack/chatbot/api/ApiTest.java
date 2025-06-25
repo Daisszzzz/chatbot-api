@@ -62,5 +62,33 @@ public class ApiTest {
             System.out.println(response.getStatusLine().getStatusCode());
         }
     }
+
+    @Test
+    public void test_chatGPT() throws IOException {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+
+        HttpPost post = new HttpPost("https://api.deepseek.com/chat/completions");
+        post.addHeader("Content-Type","application/json");
+        post.addHeader("Authorization","Bearer sk-1e016b68555e481d8bf68470d4b78da0");
+
+        String paramJson = "{\n" +
+                "        \"model\": \"deepseek-chat\",\n" +
+                "        \"messages\": [\n" +
+                "          {\"role\": \"user\", \"content\": \"Hello!\"}\n" +
+                "        ],\n" +
+                "        \"stream\": false\n" +
+                "      }";
+
+        StringEntity stringEntity = new StringEntity(paramJson, ContentType.create("text/json", "UTF-8"));
+        post.setEntity(stringEntity);
+
+        CloseableHttpResponse response = httpClient.execute(post);
+        if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String res = EntityUtils.toString(response.getEntity());
+            System.out.println(res);
+        } else {
+            System.out.println(response.getStatusLine().getStatusCode());
+        }
+    }
 }
 

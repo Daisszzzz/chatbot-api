@@ -1,5 +1,6 @@
 package cn.bugstack.chatbot.api;
 
+import cn.bugstack.chatbot.api.domain.ai.service.Deepseek;
 import cn.bugstack.chatbot.api.domain.zsxq.model.aggregate.TalkTopicId;
 import cn.bugstack.chatbot.api.domain.zsxq.model.vo.Topics;
 import cn.bugstack.chatbot.api.domain.zsxq.service.ZsxqApi;
@@ -37,6 +38,9 @@ public class SpringBootRunTest {
     @Resource
     private ZsxqApi api;
 
+    @Resource
+    private Deepseek deepseek;
+
     @Test
     public void test_zsxqApi() throws IOException {
         TalkTopicId uncommentedTopicId = api.queryTalkTopicId(groupId, cookie);
@@ -54,5 +58,11 @@ public class SpringBootRunTest {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    @Test
+    public void test_deepseek() throws IOException {
+        String response = deepseek.doDeepseek("帮我用python输出hello world");
+        logger.info("测试结果:{}", response);
     }
 }
