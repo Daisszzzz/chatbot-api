@@ -41,7 +41,7 @@ public class ChatbotSchedule {
     @Resource
     private Deepseek deepseek;
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     public void run() {
         try {
             if (new Random().nextBoolean()) {

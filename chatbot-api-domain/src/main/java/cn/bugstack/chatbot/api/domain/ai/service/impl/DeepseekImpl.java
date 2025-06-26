@@ -1,6 +1,9 @@
 package cn.bugstack.chatbot.api.domain.ai.service.impl;
 
+import cn.bugstack.chatbot.api.domain.ai.model.aggregate.AIAnswer;
+import cn.bugstack.chatbot.api.domain.ai.model.vo.Choices;
 import cn.bugstack.chatbot.api.domain.ai.service.Deepseek;
+import com.alibaba.fastjson.JSON;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Classname DeepseekAIImpl
@@ -54,11 +58,16 @@ public class DeepseekImpl implements Deepseek {
         CloseableHttpResponse response = httpClient.execute(post);
         if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String res = EntityUtils.toString(response.getEntity());
-            System.out.println(res);
+            AIAnswer aiAnswer = JSON.parseObject(res, AIAnswer.class);
+            StringBuilder answers = new StringBuilder();
+            List<Choices> choices = aiAnswer.getChoices();
+            choices.forEach(choice -> {
+                answers.append(choice.getMessage().getContent());
+            });
+            return answers.toString();
         } else {
-            System.out.println(response.getStatusLine().getStatusCode());
+            throw new RuntimeException("Deepseek error code is " + response.getStatusLine().getStatusCode());
         }
 
-        return "";
     }
 }
